@@ -1,14 +1,19 @@
 # Makefile
 
-GOPATH		= ../../../../../..
-GW		= $(shell go list -f '{{ .Dir }}' -m github.com/grpc-ecosystem/grpc-gateway)
-APIS		= $(shell go list -f '{{ .Dir }}' -m github.com/gogo/googleapis)
-INCLUDE		= -I. -I${GW} -I${APIS} -I${GOPATH} -I../edgeprotogen
-BUILTIN		= Mgoogle/protobuf/timestamp.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/empty.proto=github.com/gogo/protobuf/types,Mgoogle/api/annotations.proto=github.com/gogo/googleapis/google/api,Mgoogle/protobuf/field_mask.proto=github.com/gogo/protobuf/types,Mgoogle/protobuf/descriptor.proto=github.com/golang/protobuf/protoc-gen-go/descriptor
+GOOGLEAPIS	= ../third_party/googleapis
+INCLUDE		= -I. -I${GOOGLEAPIS} -I../edgeprotogen
+BUILTIN		= Mgoogle/api/annotations.proto=${GOOGLEAPIS}/google/api,Mgoogle/protobuf/descriptor.proto=${GOOGLEAPIS}/google/protobuf,Medgeprotogen.proto=.,Mloc.proto=.,Mappcommon.proto=.,Mapp-client.proto=.,Mdynamic-location-group.proto=.
 
-build:
-	protoc ${INCLUDE} --gomex_out=plugins=grpc+mex,${BUILTIN}:. *.proto
-	protoc ${INCLUDE} --grpc-gateway_out=${BUILTIN}:. *.proto
-	# swagger annotations for REST APIs
-	# go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+# go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger@latest
+doc:
 	protoc ${INCLUDE} --swagger_out=logtostderr=true,allow_merge=true,merge_file_name=app-client:. *.proto
+
+# Newer version of grpc-gateway and swagger generator
+# go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@latest
+doc2:
+	protoc ${INCLUDE} --openapiv2_out=${BUILTIN},logtostderr=true,allow_merge=true,merge_file_name=app-client:. *.proto
+
+# Convert openapi v2 to v3
+# https://npmjs.com/package/swagger2openapi
+docv3: doc2
+	swagger2openapi -o app-client-openapi.yaml -y app-client.swagger.json
