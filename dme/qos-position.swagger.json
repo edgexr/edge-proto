@@ -1,0 +1,324 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "qos-position.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "QosPositionKpi"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/getqospositionkpi": {
+      "post": {
+        "operationId": "QosPositionKpi_GetQosPositionKpi",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/distributed_match_engineQosPositionKpiReply"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of distributed_match_engineQosPositionKpiReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineQosPositionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "QosPositionKpi"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "distributed_match_engineBandSelection": {
+      "type": "object",
+      "properties": {
+        "rat2g": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Radio Access Technologies"
+        },
+        "rat3g": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rat4g": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rat5g": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "supported band values"
+    },
+    "distributed_match_engineLoc": {
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "format": "double",
+          "title": "Latitude in WGS 84 coordinates"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double",
+          "title": "Longitude in WGS 84 coordinates"
+        },
+        "horizontalAccuracy": {
+          "type": "number",
+          "format": "double",
+          "title": "Horizontal accuracy (radius in meters)"
+        },
+        "verticalAccuracy": {
+          "type": "number",
+          "format": "double",
+          "title": "Vertical accuracy (meters)"
+        },
+        "altitude": {
+          "type": "number",
+          "format": "double",
+          "title": "On android only lat and long are guaranteed to be supplied\nAltitude in meters"
+        },
+        "course": {
+          "type": "number",
+          "format": "double",
+          "title": "Course (IOS) / bearing (Android) (degrees east relative to true north)"
+        },
+        "speed": {
+          "type": "number",
+          "format": "double",
+          "title": "Speed (IOS) / velocity (Android) (meters/sec)"
+        },
+        "timestamp": {
+          "$ref": "#/definitions/distributed_match_engineTimestamp",
+          "title": "Timestamp"
+        }
+      },
+      "title": "GPS Location"
+    },
+    "distributed_match_engineQosPosition": {
+      "type": "object",
+      "properties": {
+        "positionid": {
+          "type": "string",
+          "format": "int64",
+          "title": "as set by the client, must be unique within QosRequest"
+        },
+        "gpsLocation": {
+          "$ref": "#/definitions/distributed_match_engineLoc",
+          "title": "location"
+        }
+      }
+    },
+    "distributed_match_engineQosPositionKpiReply": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "status": {
+          "$ref": "#/definitions/distributed_match_engineReplyStatus",
+          "title": "Status of the reply"
+        },
+        "positionResults": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/distributed_match_engineQosPositionKpiResult"
+          },
+          "title": "kpi details"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      }
+    },
+    "distributed_match_engineQosPositionKpiResult": {
+      "type": "object",
+      "properties": {
+        "positionid": {
+          "type": "string",
+          "format": "int64",
+          "title": "as set by the client, must be unique within one QosPositionRequest"
+        },
+        "gpsLocation": {
+          "$ref": "#/definitions/distributed_match_engineLoc",
+          "title": "the location which was requested"
+        },
+        "dluserthroughputMin": {
+          "type": "number",
+          "format": "float",
+          "title": "throughput"
+        },
+        "dluserthroughputAvg": {
+          "type": "number",
+          "format": "float"
+        },
+        "dluserthroughputMax": {
+          "type": "number",
+          "format": "float"
+        },
+        "uluserthroughputMin": {
+          "type": "number",
+          "format": "float"
+        },
+        "uluserthroughputAvg": {
+          "type": "number",
+          "format": "float"
+        },
+        "uluserthroughputMax": {
+          "type": "number",
+          "format": "float"
+        },
+        "latencyMin": {
+          "type": "number",
+          "format": "float"
+        },
+        "latencyAvg": {
+          "type": "number",
+          "format": "float"
+        },
+        "latencyMax": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "distributed_match_engineQosPositionRequest": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "sessionCookie": {
+          "type": "string",
+          "title": "Session Cookie from RegisterClientRequest"
+        },
+        "positions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/distributed_match_engineQosPosition"
+          },
+          "title": "list of positions"
+        },
+        "lteCategory": {
+          "type": "integer",
+          "format": "int32",
+          "description": "_(optional)_ Client's device LTE category number."
+        },
+        "bandSelection": {
+          "$ref": "#/definitions/distributed_match_engineBandSelection",
+          "description": "_(optional)_ Band list used by the client."
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      },
+      "title": "QosPositionRequest is used for both GetQosPositionKpi"
+    },
+    "distributed_match_engineReplyStatus": {
+      "type": "string",
+      "enum": [
+        "RS_UNDEFINED",
+        "RS_SUCCESS",
+        "RS_FAIL"
+      ],
+      "default": "RS_UNDEFINED",
+      "description": "- RS_UNDEFINED: Undefined status\n - RS_SUCCESS: Successful status\n - RS_FAIL: Failure status",
+      "title": "ReplyStatus"
+    },
+    "distributed_match_engineTimestamp": {
+      "type": "object",
+      "properties": {
+        "seconds": {
+          "type": "string",
+          "format": "int64"
+        },
+        "nanos": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "This is a simple Timestamp message type\ngrpc-gateway converts google.protobuf.Timestamp into an RFC3339-type string\nwhich is a waste of a conversion, so we define our own"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

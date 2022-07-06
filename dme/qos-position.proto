@@ -1,0 +1,102 @@
+// Copyright 2022 MobiledgeX, Inc
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Device service APIs
+
+syntax = "proto3";
+package distributed_match_engine;
+
+import "google/api/annotations.proto";
+import "appcommon.proto";
+import "loc.proto";
+
+message QosPosition{
+  // as set by the client, must be unique within QosRequest
+  int64 positionid = 1;
+  //location
+  Loc gps_location = 2;
+}
+
+// supported band values
+message BandSelection {
+    // Radio Access Technologies
+    repeated string rat2g = 1;
+    repeated string rat3g = 2;
+    repeated string rat4g = 3;
+    repeated string rat5g = 4;
+}
+
+// QosPositionRequest is used for both GetQosPositionKpi
+message QosPositionRequest{
+  /*
+   * API version
+   *
+   * _(hidden)_ Reserved for future use
+   */
+  uint32 ver = 1;
+  // Session Cookie from RegisterClientRequest
+  string session_cookie = 2;
+  // list of positions
+  repeated QosPosition positions = 3;
+  // _(optional)_ Client's device LTE category number.
+  int32 lte_category = 4;
+  // _(optional)_ Band list used by the client.
+  BandSelection band_selection = 5;
+  // _(removed)_ Cell id where the client is
+  reserved "cell_id";
+  reserved 6;
+  // _(optional)_ Vendor specific data
+  map<string, string> tags = 100;
+}
+
+message QosPositionKpiResult{
+  // as set by the client, must be unique within one QosPositionRequest
+  int64 positionid = 1;
+  // the location which was requested
+  Loc gps_location = 2;
+  // throughput
+  float dluserthroughput_min = 3;
+  float dluserthroughput_avg = 4;
+  float dluserthroughput_max = 5;
+  float uluserthroughput_min = 6;
+  float uluserthroughput_avg = 7;
+  float uluserthroughput_max = 8;
+  float latency_min = 9;
+  float latency_avg = 10;
+  float latency_max = 11;
+}
+
+message QosPositionKpiReply{
+  /*
+   * API version
+   *
+   * _(hidden)_ Reserved for future use
+   */
+  uint32 ver = 1;
+  // Status of the reply
+  ReplyStatus status = 2;
+  // kpi details
+  repeated QosPositionKpiResult position_results = 3;
+  // _(optional)_ Vendor specific data
+  map<string, string> tags = 100;
+}
+
+service QosPositionKpi {
+  rpc GetQosPositionKpi(QosPositionRequest) returns (stream QosPositionKpiReply) {
+    option (google.api.http) = {
+      post: "/v1/getqospositionkpi"
+      body: "*"
+    };
+  }
+}

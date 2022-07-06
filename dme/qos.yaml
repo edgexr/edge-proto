@@ -1,0 +1,238 @@
+openapi: 3.0.0
+info:
+  title: qos.proto
+  version: version not set
+tags:
+  - name: QualityOfService
+paths:
+  /v1/qosprioritysessioncreate:
+    post:
+      summary: QosPrioritySessionCreate
+      description: >-
+        Creates a QOS priority session (latency or throughput priority) from the
+        client
+
+        to the app inst by making a call to the operator's priority session API server.
+      operationId: QualityOfService_QosPrioritySessionCreate
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/distributed_match_engineQosPrioritySessionReply"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/distributed_match_engineQosPrioritySessionCreateReq\
+                uest"
+        required: true
+      tags:
+        - QualityOfService
+  /v1/qosprioritysessiondelete:
+    post:
+      summary: QosPrioritySessionDelete
+      description: >-
+        Deletes a previously created QOS priority session by making a call to
+        the operator's 
+
+        priority session API server.
+      operationId: QualityOfService_QosPrioritySessionDelete
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/distributed_match_engineQosPrioritySessionDeleteRep\
+                  ly"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/distributed_match_engineQosPrioritySessionDeleteReq\
+                uest"
+        required: true
+      tags:
+        - QualityOfService
+components:
+  schemas:
+    QosPrioritySessionDeleteReplyDeleteStatus:
+      type: string
+      enum:
+        - QDEL_UNKNOWN
+        - QDEL_DELETED
+        - QDEL_NOT_FOUND
+      default: QDEL_UNKNOWN
+    distributed_match_engineQosPrioritySessionCreateRequest:
+      type: object
+      properties:
+        ver:
+          type: integer
+          format: int64
+          description: _(hidden)_ Reserved for future use
+          title: API version
+        sessionCookie:
+          type: string
+          title: Session Cookie from RegisterClientRequest
+        sessionDuration:
+          type: integer
+          format: int64
+          title: _(optional)_ QOS Priority Session duration in seconds
+        ipUserEquipment:
+          type: string
+          title: IP address of mobile device
+        ipApplicationServer:
+          type: string
+          title: IP address of the application server
+        portUserEquipment:
+          type: string
+          description: _(optional)_ A list of single ports or port ranges on the user
+            equipment.
+        portApplicationServer:
+          type: string
+          title: _(optional)_ A list of single ports or port ranges on the application
+            server
+        protocolIn:
+          $ref: "#/components/schemas/distributed_match_engineQosSessionProtocol"
+        protocolOut:
+          $ref: "#/components/schemas/distributed_match_engineQosSessionProtocol"
+        profile:
+          $ref: "#/components/schemas/distributed_match_engineQosSessionProfile"
+        notificationUri:
+          type: string
+          description: _(optional)_ URI of the callback receiver. Allows asynchronous
+            delivery of session related events.
+        notificationAuthToken:
+          type: string
+          title: _(optional)_ Authentification token for callback API
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          title: _(optional)_ Vendor specific data
+    distributed_match_engineQosPrioritySessionDeleteReply:
+      type: object
+      properties:
+        ver:
+          type: integer
+          format: int64
+          description: _(hidden)_ Reserved for future use
+          title: API version
+        status:
+          $ref: "#/components/schemas/QosPrioritySessionDeleteReplyDeleteStatus"
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          title: _(optional)_ Vendor specific data
+    distributed_match_engineQosPrioritySessionDeleteRequest:
+      type: object
+      properties:
+        ver:
+          type: integer
+          format: int64
+          description: _(hidden)_ Reserved for future use
+          title: API version
+        sessionCookie:
+          type: string
+          title: Session Cookie from RegisterClientRequest
+        profile:
+          $ref: "#/components/schemas/distributed_match_engineQosSessionProfile"
+        sessionId:
+          type: string
+          title: QOS Priority Session ID to be deleted
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          title: _(optional)_ Vendor specific data
+    distributed_match_engineQosPrioritySessionReply:
+      type: object
+      properties:
+        ver:
+          type: integer
+          format: int64
+          description: _(hidden)_ Reserved for future use
+          title: API version
+        sessionDuration:
+          type: integer
+          format: int64
+          title: QOS Priority Session duration in seconds
+        profile:
+          $ref: "#/components/schemas/distributed_match_engineQosSessionProfile"
+        sessionId:
+          type: string
+          title: Session ID in UUID format
+        startedAt:
+          type: integer
+          format: int64
+          title: Timestamp of session start in seconds since unix epoch
+        expiresAt:
+          type: integer
+          format: int64
+          title: Timestamp of session expiration if the session was not deleted in seconds
+            since unix epoch
+        httpStatus:
+          type: integer
+          format: int64
+          description: HTTP Status Code of call to operator's API server.
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          title: _(optional)_ Vendor specific data
+    distributed_match_engineQosSessionProfile:
+      type: string
+      enum:
+        - QOS_NO_PRIORITY
+        - QOS_LOW_LATENCY
+        - QOS_THROUGHPUT_DOWN_S
+        - QOS_THROUGHPUT_DOWN_M
+        - QOS_THROUGHPUT_DOWN_L
+      default: QOS_NO_PRIORITY
+      title: >-
+        - QOS_NO_PRIORITY: Specifies that no priority session should be created
+         - QOS_LOW_LATENCY: Corresponds to a specific set of network parameters for low latency that will be 
+        negotiated with the network provider in advance
+         - QOS_THROUGHPUT_DOWN_S: Downlink traffic from AppInst to client is prioritized up to 20Mbps
+         - QOS_THROUGHPUT_DOWN_M: Downlink traffic from AppInst to client is prioritized up to 50Mbps
+         - QOS_THROUGHPUT_DOWN_L: Downlink traffic from AppInst to client is prioritized up to 100Mbps
+    distributed_match_engineQosSessionProtocol:
+      type: string
+      enum:
+        - TCP
+        - UDP
+        - ANY
+      default: TCP
+    protobufAny:
+      type: object
+      properties:
+        "@type":
+          type: string
+      additionalProperties: {}
+    rpcStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/protobufAny"

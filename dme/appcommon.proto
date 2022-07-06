@@ -147,3 +147,15 @@ enum MaintenanceState {
   // Carrier name (can be different from cloudlet org if using "")
   string carrier_name = 3;
 }
+
+/*
+ * ReplyStatus
+ */
+enum ReplyStatus {
+  // Undefined status
+  RS_UNDEFINED = 0;
+  // Successful status
+  RS_SUCCESS = 1;
+  // Failure status
+  RS_FAIL = 2;
+}

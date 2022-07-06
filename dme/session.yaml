@@ -1,0 +1,179 @@
+openapi: 3.0.0
+info:
+  title: session.proto
+  version: version not set
+tags:
+  - name: Session
+paths:
+  /v1/registerclient:
+    post:
+      summary: RegisterClient
+      description: >-
+        Registers the client with the closest Distributed Matching Engine (the
+
+        nearest edge location in the Operator network) and validates the
+
+        legitimacy of the mobile subscriber. All session information is encrypted.
+      operationId: Session_RegisterClient
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/distributed_match_engineRegisterClientReply"
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/distributed_match_engineRegisterClientRequest"
+        required: true
+      tags:
+        - Session
+components:
+  schemas:
+    distributed_match_engineRegisterClientReply:
+      type: object
+      properties:
+        ver:
+          type: integer
+          format: int64
+          description: _(hidden)_ Reserved for future use
+          title: API version
+        status:
+          $ref: "#/components/schemas/distributed_match_engineReplyStatus"
+        sessionCookie:
+          type: string
+          title: Session Cookie to be used in later API calls
+        tokenServerUri:
+          type: string
+          title: URI for the Token Server
+        uniqueIdType:
+          type: string
+          description: >-
+            _(optional)_ Type of unique ID provided by the server
+
+            A unique_id_type and unique_id may be provided by the client to be registered.
+
+            During registering, if a unique_id_type and unique_id are provided by the client in their request,
+
+            the unique_id_type and unique_id will be left blank in the response.
+
+            But, if the client does not provide a unique_id_type and unique_id, then the server generates
+
+            one and provides the unique_id in the response. If possible, the unique_id should be saved by the
+
+            client locally and used for subsequent RegisterClient API calls. Otherwise, a new unique_id will be
+
+            generated for further API calls.
+          title: Unique ID Type
+        uniqueId:
+          type: string
+          description: >-
+            _(optional)_ Unique identification of the client device or user
+
+            A unique_id_type and unique_id may be provided by the client to be registered.
+
+            During registering, if a unique_id_type and unique_id are provided by the client in their request,
+
+            the unique_id_type and unique_id will be left blank in the response.
+
+            But, if the client does not provide a unique_id_type and unique_id, then the server generates
+
+            one and provides the unique_id in the response. If possible, the unique_id should be saved by the
+
+            client locally and used for subsequent RegisterClient API calls. Otherwise, a new unique_id will be
+
+            generated for further API calls.
+          title: Unique ID
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: _(optional)_ Array of Tags.
+          title: Vendor specific data
+    distributed_match_engineRegisterClientRequest:
+      type: object
+      properties:
+        ver:
+          type: integer
+          format: int64
+          description: _(hidden)_ Reserved for future use
+          title: API version
+        orgName:
+          type: string
+          description: App developer organization name.
+          title: App Organization Name
+        appName:
+          type: string
+          description: Name of your application.
+          title: App Name
+        appVers:
+          type: string
+          description: Application version.
+          title: App Version
+        carrierName:
+          type: string
+          description: _(hidden)_ Reserved for future use
+          title: Carrier Name
+        authToken:
+          type: string
+          description: _(optional)_ An authentication token supplied by the application.
+          title: Authentication Token
+        uniqueIdType:
+          type: string
+          description: >-
+            _(optional)_ Type of unique ID provided by the client.
+
+            If left blank, a new Unique ID type will be assigned in the RegisterClient Reply.
+          title: Unique ID Type
+        uniqueId:
+          type: string
+          description: >-
+            _(optional)_ Unique identification of the client device or user. May
+            be overridden by the server.
+
+            If left blank, a new Unique ID will be assigned in the RegisterClient Reply.
+          title: Unique ID
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          description: _(optional)_ Vendor specific data
+          title: Tags
+    distributed_match_engineReplyStatus:
+      type: string
+      enum:
+        - RS_UNDEFINED
+        - RS_SUCCESS
+        - RS_FAIL
+      default: RS_UNDEFINED
+      description: |-
+        - RS_UNDEFINED: Undefined status
+         - RS_SUCCESS: Successful status
+         - RS_FAIL: Failure status
+      title: ReplyStatus
+    protobufAny:
+      type: object
+      properties:
+        "@type":
+          type: string
+      additionalProperties: {}
+    rpcStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/protobufAny"

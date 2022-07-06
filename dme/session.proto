@@ -1,0 +1,149 @@
+// Copyright 2022 MobiledgeX, Inc
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// Device service APIs
+
+syntax = "proto3";
+package distributed_match_engine;
+
+import "google/api/annotations.proto";
+import "appcommon.proto";
+
+message RegisterClientRequest {
+  /*
+   * API version
+   *
+   * _(hidden)_ Reserved for future use
+   */
+  uint32 ver = 1;
+  /*
+  * App Organization Name
+  *
+  * App developer organization name.
+ */
+ string org_name= 2;
+ /*
+  * App Name
+  *
+  * Name of your application.
+ */
+ string app_name= 3;
+ /*
+  * App Version
+  *
+  * Application version.
+ */
+ string app_vers= 4;
+  /*
+   * Carrier Name
+   *
+   * _(hidden)_ Reserved for future use
+   */
+  string carrier_name = 5;
+  /*
+   * Authentication Token
+   *
+   * _(optional)_ An authentication token supplied by the application.
+   */
+  string auth_token = 6;
+  /*
+   * Cell ID
+   *
+   * _(removed)_ Cellular ID of where the client is connected.
+   */
+  reserved "cell_id";
+  reserved 7;
+  /*
+   * Unique ID Type
+   *
+   * _(optional)_ Type of unique ID provided by the client.
+   * If left blank, a new Unique ID type will be assigned in the RegisterClient Reply.
+   */
+  string unique_id_type = 8;
+  /*
+   * Unique ID
+   *
+   * _(optional)_ Unique identification of the client device or user. May be overridden by the server.
+   * If left blank, a new Unique ID will be assigned in the RegisterClient Reply.
+   */
+  string unique_id = 9;
+  /*
+   * Tags
+   *
+   * _(optional)_ Vendor specific data
+   */
+  map<string, string> tags = 100;
+}
+
+message RegisterClientReply {
+  /*
+   * API version
+   *
+   * _(hidden)_ Reserved for future use
+   */
+  uint32 ver = 1;
+  // Status of the reply
+  ReplyStatus status = 2;
+  // Session Cookie to be used in later API calls
+  string session_cookie = 3;
+  // URI for the Token Server
+  string token_server_uri = 4;
+  /*
+   * Unique ID Type
+   *
+   * _(optional)_ Type of unique ID provided by the server
+   * A unique_id_type and unique_id may be provided by the client to be registered.
+   * During registering, if a unique_id_type and unique_id are provided by the client in their request,
+   * the unique_id_type and unique_id will be left blank in the response.
+   * But, if the client does not provide a unique_id_type and unique_id, then the server generates
+   * one and provides the unique_id in the response. If possible, the unique_id should be saved by the
+   * client locally and used for subsequent RegisterClient API calls. Otherwise, a new unique_id will be
+   * generated for further API calls.
+   */
+  string unique_id_type = 5;
+  /*
+   * Unique ID
+   *
+   * _(optional)_ Unique identification of the client device or user
+   * A unique_id_type and unique_id may be provided by the client to be registered.
+   * During registering, if a unique_id_type and unique_id are provided by the client in their request,
+   * the unique_id_type and unique_id will be left blank in the response.
+   * But, if the client does not provide a unique_id_type and unique_id, then the server generates
+   * one and provides the unique_id in the response. If possible, the unique_id should be saved by the
+   * client locally and used for subsequent RegisterClient API calls. Otherwise, a new unique_id will be
+   * generated for further API calls.
+   */
+  string unique_id = 6;
+  /* Vendor specific data
+   *
+   * _(optional)_ Array of Tags.
+   */
+  map<string, string> tags = 100;
+}
+
+service Session {
+  /*
+   * RegisterClient
+   *
+   * Registers the client with the closest Distributed Matching Engine (the
+   * nearest edge location in the Operator network) and validates the
+   * legitimacy of the mobile subscriber. All session information is encrypted.
+   */
+  rpc RegisterClient(RegisterClientRequest) returns (RegisterClientReply) {
+    option (google.api.http) = {
+      post: "/v1/registerclient"
+      body: "*"
+    };
+  }
+}

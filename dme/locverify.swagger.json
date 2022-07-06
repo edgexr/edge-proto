@@ -1,0 +1,337 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "locverify.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Location"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/getlocation": {
+      "post": {
+        "operationId": "Location_GetLocation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineGetLocationReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineGetLocationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Location"
+        ]
+      }
+    },
+    "/v1/verifylocation": {
+      "post": {
+        "summary": "VerifyLocation",
+        "description": "Verifies that the GPS coordinates accurately report the actual location of the device.",
+        "operationId": "Location_VerifyLocation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineVerifyLocationReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineVerifyLocationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Location"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "GetLocationReplyLocStatus": {
+      "type": "string",
+      "enum": [
+        "LOC_UNKNOWN",
+        "LOC_FOUND",
+        "LOC_DENIED"
+      ],
+      "default": "LOC_UNKNOWN",
+      "description": "- LOC_DENIED: The user does not allow his location to be tracked",
+      "title": "Status of the reply"
+    },
+    "VerifyLocationReplyGPSLocationStatus": {
+      "type": "string",
+      "enum": [
+        "LOC_UNKNOWN",
+        "LOC_VERIFIED",
+        "LOC_MISMATCH_SAME_COUNTRY",
+        "LOC_MISMATCH_OTHER_COUNTRY",
+        "LOC_ROAMING_COUNTRY_MATCH",
+        "LOC_ROAMING_COUNTRY_MISMATCH",
+        "LOC_ERROR_UNAUTHORIZED",
+        "LOC_ERROR_OTHER"
+      ],
+      "default": "LOC_UNKNOWN"
+    },
+    "VerifyLocationReplyTowerStatus": {
+      "type": "string",
+      "enum": [
+        "TOWER_UNKNOWN",
+        "CONNECTED_TO_SPECIFIED_TOWER",
+        "NOT_CONNECTED_TO_SPECIFIED_TOWER"
+      ],
+      "default": "TOWER_UNKNOWN",
+      "title": "Status of the reply"
+    },
+    "distributed_match_engineGetLocationReply": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "status": {
+          "$ref": "#/definitions/GetLocationReplyLocStatus"
+        },
+        "carrierName": {
+          "type": "string",
+          "title": "Unique carrier identification (typically MCC + MNC)"
+        },
+        "tower": {
+          "type": "string",
+          "format": "uint64",
+          "title": "The tower that the user is currently connected to"
+        },
+        "networkLocation": {
+          "$ref": "#/definitions/distributed_match_engineLoc",
+          "title": "The GPS location of the user"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      }
+    },
+    "distributed_match_engineGetLocationRequest": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "sessionCookie": {
+          "type": "string",
+          "title": "Session Cookie from RegisterClientRequest"
+        },
+        "carrierName": {
+          "type": "string",
+          "title": "Unique carrier identification (typically MCC + MNC)"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      }
+    },
+    "distributed_match_engineLoc": {
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "format": "double",
+          "title": "Latitude in WGS 84 coordinates"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double",
+          "title": "Longitude in WGS 84 coordinates"
+        },
+        "horizontalAccuracy": {
+          "type": "number",
+          "format": "double",
+          "title": "Horizontal accuracy (radius in meters)"
+        },
+        "verticalAccuracy": {
+          "type": "number",
+          "format": "double",
+          "title": "Vertical accuracy (meters)"
+        },
+        "altitude": {
+          "type": "number",
+          "format": "double",
+          "title": "On android only lat and long are guaranteed to be supplied\nAltitude in meters"
+        },
+        "course": {
+          "type": "number",
+          "format": "double",
+          "title": "Course (IOS) / bearing (Android) (degrees east relative to true north)"
+        },
+        "speed": {
+          "type": "number",
+          "format": "double",
+          "title": "Speed (IOS) / velocity (Android) (meters/sec)"
+        },
+        "timestamp": {
+          "$ref": "#/definitions/distributed_match_engineTimestamp",
+          "title": "Timestamp"
+        }
+      },
+      "title": "GPS Location"
+    },
+    "distributed_match_engineTimestamp": {
+      "type": "object",
+      "properties": {
+        "seconds": {
+          "type": "string",
+          "format": "int64"
+        },
+        "nanos": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "This is a simple Timestamp message type\ngrpc-gateway converts google.protobuf.Timestamp into an RFC3339-type string\nwhich is a waste of a conversion, so we define our own"
+    },
+    "distributed_match_engineVerifyLocationReply": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "towerStatus": {
+          "$ref": "#/definitions/VerifyLocationReplyTowerStatus"
+        },
+        "gpsLocationStatus": {
+          "$ref": "#/definitions/VerifyLocationReplyGPSLocationStatus"
+        },
+        "gpsLocationAccuracyKm": {
+          "type": "number",
+          "format": "double",
+          "title": "location accuracy, the location is verified to\nbe within this number of kilometers.  Negative value\nmeans no verification was performed"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      }
+    },
+    "distributed_match_engineVerifyLocationRequest": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "sessionCookie": {
+          "type": "string",
+          "description": "Session Cookie from RegisterClientRequest",
+          "title": "Session Cookie"
+        },
+        "carrierName": {
+          "type": "string",
+          "description": "Unique carrier identification (typically MCC + MNC)",
+          "title": "Carrier Name"
+        },
+        "gpsLocation": {
+          "$ref": "#/definitions/distributed_match_engineLoc",
+          "description": "The GPS location to verify",
+          "title": "GPS Location"
+        },
+        "verifyLocToken": {
+          "type": "string",
+          "description": "Must be retrieved from TokenServerURI",
+          "title": "Verify Location Token"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "_(optional)_ Vendor specific data",
+          "title": "Tags"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

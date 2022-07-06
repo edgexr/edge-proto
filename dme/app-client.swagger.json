@@ -1,0 +1,1052 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "app-client.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "MatchEngineApi"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/findcloudlet": {
+      "post": {
+        "summary": "FindCloudlet",
+        "description": "Locates the most optimal edge computing footprint and allows the\nregistered application to find the application backend by leveraging the\nlocation, application subscription, and service provider agreement. If\nthere are no suitable cloudlet instances available, the client may connect\nto the application server located in the public cloud.",
+        "operationId": "MatchEngineApi_FindCloudlet",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineFindCloudletReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineFindCloudletRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MatchEngineApi"
+        ]
+      }
+    },
+    "/v1/getappinstlist": {
+      "post": {
+        "operationId": "MatchEngineApi_GetAppInstList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineAppInstListReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineAppInstListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MatchEngineApi"
+        ]
+      }
+    },
+    "/v1/getappofficialfqdn": {
+      "post": {
+        "operationId": "MatchEngineApi_GetAppOfficialFqdn",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineAppOfficialFqdnReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineAppOfficialFqdnRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MatchEngineApi"
+        ]
+      }
+    },
+    "/v1/getfqdnlist": {
+      "post": {
+        "operationId": "MatchEngineApi_GetFqdnList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineFqdnListReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineFqdnListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MatchEngineApi"
+        ]
+      }
+    },
+    "/v1/platformfindcloudlet": {
+      "post": {
+        "summary": "PlatformFindCloudlet",
+        "description": "Similar to FindCloudlet, except uses a token for client data.\nThis API is only applicable for Platform Applications.",
+        "operationId": "MatchEngineApi_PlatformFindCloudlet",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineFindCloudletReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/distributed_match_enginePlatformFindCloudletRequest"
+            }
+          }
+        ],
+        "tags": [
+          "MatchEngineApi"
+        ]
+      }
+    },
+    "/v1/streamedgeevent": {
+      "post": {
+        "operationId": "MatchEngineApi_StreamEdgeEvent",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/distributed_match_engineServerEdgeEvent"
+                },
+                "error": {
+                  "$ref": "#/definitions/rpcStatus"
+                }
+              },
+              "title": "Stream result of distributed_match_engineServerEdgeEvent"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": " (streaming inputs)",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/distributed_match_engineClientEdgeEvent"
+            }
+          }
+        ],
+        "tags": [
+          "MatchEngineApi"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "AppInstListReplyAIStatus": {
+      "type": "string",
+      "enum": [
+        "AI_UNDEFINED",
+        "AI_SUCCESS",
+        "AI_FAIL"
+      ],
+      "default": "AI_UNDEFINED",
+      "title": "Status of the reply"
+    },
+    "AppOfficialFqdnReplyAOFStatus": {
+      "type": "string",
+      "enum": [
+        "AOF_UNDEFINED",
+        "AOF_SUCCESS",
+        "AOF_FAIL"
+      ],
+      "default": "AOF_UNDEFINED"
+    },
+    "ClientEdgeEventClientEventType": {
+      "type": "string",
+      "enum": [
+        "EVENT_UNKNOWN",
+        "EVENT_INIT_CONNECTION",
+        "EVENT_TERMINATE_CONNECTION",
+        "EVENT_LATENCY_SAMPLES",
+        "EVENT_LOCATION_UPDATE",
+        "EVENT_CUSTOM_EVENT"
+      ],
+      "default": "EVENT_UNKNOWN"
+    },
+    "FindCloudletReplyFindStatus": {
+      "type": "string",
+      "enum": [
+        "FIND_UNKNOWN",
+        "FIND_FOUND",
+        "FIND_NOTFOUND"
+      ],
+      "default": "FIND_UNKNOWN"
+    },
+    "FindCloudletReplyQosSessionResult": {
+      "type": "string",
+      "enum": [
+        "QOS_NOT_ATTEMPTED",
+        "QOS_SESSION_CREATED",
+        "QOS_SESSION_FAILED"
+      ],
+      "default": "QOS_NOT_ATTEMPTED"
+    },
+    "FqdnListReplyFLStatus": {
+      "type": "string",
+      "enum": [
+        "FL_UNDEFINED",
+        "FL_SUCCESS",
+        "FL_FAIL"
+      ],
+      "default": "FL_UNDEFINED",
+      "title": "Status of the reply"
+    },
+    "ServerEdgeEventServerEventType": {
+      "type": "string",
+      "enum": [
+        "EVENT_UNKNOWN",
+        "EVENT_INIT_CONNECTION",
+        "EVENT_LATENCY_REQUEST",
+        "EVENT_LATENCY_PROCESSED",
+        "EVENT_CLOUDLET_STATE",
+        "EVENT_CLOUDLET_MAINTENANCE",
+        "EVENT_APPINST_HEALTH",
+        "EVENT_CLOUDLET_UPDATE",
+        "EVENT_ERROR"
+      ],
+      "default": "EVENT_UNKNOWN"
+    },
+    "distributed_match_engineAppFqdn": {
+      "type": "object",
+      "properties": {
+        "appName": {
+          "type": "string",
+          "title": "App  Name"
+        },
+        "appVers": {
+          "type": "string",
+          "title": "App Version"
+        },
+        "orgName": {
+          "type": "string",
+          "title": "App organization name"
+        },
+        "fqdns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "App FQDN"
+        },
+        "androidPackageName": {
+          "type": "string",
+          "title": "_(optional)_ Android package name"
+        }
+      }
+    },
+    "distributed_match_engineAppInstListReply": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "status": {
+          "$ref": "#/definitions/AppInstListReplyAIStatus"
+        },
+        "cloudlets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/distributed_match_engineCloudletLocation"
+          }
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      }
+    },
+    "distributed_match_engineAppInstListRequest": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "sessionCookie": {
+          "type": "string",
+          "title": "Session Cookie from RegisterClientRequest"
+        },
+        "carrierName": {
+          "type": "string",
+          "description": "_(optional)_ By default, all SDKs will automatically fill in this parameter with the MCC+MNC of your current provider. Only override this parameter if you need to filter for a specific carrier on the DME. The DME will filter for App instances that are associated with the specified carrier.\nIf you wish to search for any App Instance on the DME regardless of carrier name, you can input “” to consider all carriers as “Any”.",
+          "title": "Carrier Name"
+        },
+        "gpsLocation": {
+          "$ref": "#/definitions/distributed_match_engineLoc",
+          "title": "The GPS location of the user"
+        },
+        "limit": {
+          "type": "integer",
+          "format": "int64",
+          "title": "_(optional)_ Limit the number of results, defaults to 3"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      }
+    },
+    "distributed_match_engineAppOfficialFqdnReply": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "appOfficialFqdn": {
+          "type": "string",
+          "title": "The FQDN to which the app is reached independent of the edge"
+        },
+        "clientToken": {
+          "type": "string",
+          "title": "Tokenized client data"
+        },
+        "status": {
+          "$ref": "#/definitions/AppOfficialFqdnReplyAOFStatus",
+          "title": "Status of the reply"
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/distributed_match_engineAppPort"
+          },
+          "title": "List of Service Endpoints for AppInst"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      }
+    },
+    "distributed_match_engineAppOfficialFqdnRequest": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "sessionCookie": {
+          "type": "string",
+          "title": "Session Cookie from RegisterClientRequest"
+        },
+        "gpsLocation": {
+          "$ref": "#/definitions/distributed_match_engineLoc",
+          "title": "The GPS location of the user"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      }
+    },
+    "distributed_match_engineAppPort": {
+      "type": "object",
+      "properties": {
+        "proto": {
+          "$ref": "#/definitions/distributed_match_engineLProto",
+          "title": "TCP (L4) or UDP (L4) protocol"
+        },
+        "internalPort": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Container port"
+        },
+        "publicPort": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Public facing port for TCP/UDP (may be mapped on shared LB reverse proxy)"
+        },
+        "fqdnPrefix": {
+          "type": "string",
+          "description": "skip 4 to preserve the numbering. 4 was path_prefix but was removed since we dont need it after removed http\nFQDN prefix to append to base FQDN in FindCloudlet response. May be empty."
+        },
+        "endPort": {
+          "type": "integer",
+          "format": "int32",
+          "description": "A non-zero end port indicates a port range from internal port to end port, inclusive."
+        },
+        "tls": {
+          "type": "boolean",
+          "title": "TLS termination for this port"
+        },
+        "nginx": {
+          "type": "boolean",
+          "title": "Use nginx proxy for this port if you really need a transparent proxy (udp only)"
+        },
+        "maxPktSize": {
+          "type": "string",
+          "format": "int64",
+          "title": "Maximum datagram size (udp only)"
+        }
+      },
+      "description": "AppPort describes an L4 or L7 public access port/path mapping. This is used to track external to internal mappings for access via a shared load balancer or reverse proxy.",
+      "title": "Application Port"
+    },
+    "distributed_match_engineAppinstance": {
+      "type": "object",
+      "properties": {
+        "appName": {
+          "type": "string",
+          "title": "App Instance Name"
+        },
+        "appVers": {
+          "type": "string",
+          "title": "App Instance Version"
+        },
+        "fqdn": {
+          "type": "string",
+          "title": "App Instance FQDN"
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/distributed_match_engineAppPort"
+          },
+          "title": "ports to access app"
+        },
+        "orgName": {
+          "type": "string",
+          "title": "App Organization Name"
+        },
+        "edgeEventsCookie": {
+          "type": "string",
+          "title": "Session Cookie for specific EdgeEvents for specific AppInst"
+        }
+      }
+    },
+    "distributed_match_engineClientEdgeEvent": {
+      "type": "object",
+      "properties": {
+        "sessionCookie": {
+          "type": "string",
+          "title": "Session Cookie from RegisterClientReply"
+        },
+        "edgeEventsCookie": {
+          "type": "string",
+          "title": "Session Cookie from FindCloudletReply"
+        },
+        "eventType": {
+          "$ref": "#/definitions/ClientEdgeEventClientEventType"
+        },
+        "gpsLocation": {
+          "$ref": "#/definitions/distributed_match_engineLoc",
+          "title": "GPS Location info if event_type is EVENT_LOCATION_UPDATE or EVENT_LATENCY_SAMPLES"
+        },
+        "samples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/distributed_match_engineSample"
+          },
+          "title": "Latency Samples if event_type is EVENT_LATENCY_SAMPLES or EVENT_CUSTOM_EVENT"
+        },
+        "deviceInfoStatic": {
+          "$ref": "#/definitions/distributed_match_engineDeviceInfoStatic",
+          "title": "_(optional)_ Static device information for latency and deviceinfo stats \nSend on EVENT_INIT_CONNECTION to get this information in latency stats and deviceinfo stats"
+        },
+        "deviceInfoDynamic": {
+          "$ref": "#/definitions/distributed_match_engineDeviceInfoDynamic",
+          "title": "_(optional)_ Dynamic device information for latency and deviceinfo stats\nSend on EVENT_INIT_CONNECTION to get this information in first deviceinfo stat\nSend on EVENT_LOCATION_UPDATE to get this information in dynamic deviceinfo stats\nSend on EVENT_LATENCY_SAMPLES to get this information in latency stats"
+        },
+        "customEvent": {
+          "type": "string",
+          "title": "Custom event specified by the application"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      },
+      "title": "Messages from SDK to DME"
+    },
+    "distributed_match_engineCloudletLocation": {
+      "type": "object",
+      "properties": {
+        "carrierName": {
+          "type": "string",
+          "title": "Cloudlet Organization Name"
+        },
+        "cloudletName": {
+          "type": "string",
+          "title": "Cloudlet Name"
+        },
+        "gpsLocation": {
+          "$ref": "#/definitions/distributed_match_engineLoc",
+          "title": "The GPS Location of the cloudlet"
+        },
+        "distance": {
+          "type": "number",
+          "format": "double",
+          "title": "Distance of cloudlet vs loc in request"
+        },
+        "appinstances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/distributed_match_engineAppinstance"
+          },
+          "title": "App instances"
+        }
+      }
+    },
+    "distributed_match_engineCloudletState": {
+      "type": "string",
+      "enum": [
+        "CLOUDLET_STATE_UNKNOWN",
+        "CLOUDLET_STATE_ERRORS",
+        "CLOUDLET_STATE_READY",
+        "CLOUDLET_STATE_OFFLINE",
+        "CLOUDLET_STATE_NOT_PRESENT",
+        "CLOUDLET_STATE_INIT",
+        "CLOUDLET_STATE_UPGRADE",
+        "CLOUDLET_STATE_NEED_SYNC"
+      ],
+      "default": "CLOUDLET_STATE_UNKNOWN",
+      "description": "CloudletState is the state of the Cloudlet.\n\n - CLOUDLET_STATE_UNKNOWN: Unknown\n - CLOUDLET_STATE_ERRORS: Create/Delete/Update encountered errors (see Errors field of CloudletInfo)\n - CLOUDLET_STATE_READY: Cloudlet is created and ready\n - CLOUDLET_STATE_OFFLINE: Cloudlet is offline (unreachable)\n - CLOUDLET_STATE_NOT_PRESENT: Cloudlet is not present\n - CLOUDLET_STATE_INIT: Cloudlet is initializing\n - CLOUDLET_STATE_UPGRADE: Cloudlet is upgrading\n - CLOUDLET_STATE_NEED_SYNC: Cloudlet needs data to synchronize"
+    },
+    "distributed_match_engineDeviceInfoDynamic": {
+      "type": "object",
+      "properties": {
+        "dataNetworkType": {
+          "type": "string",
+          "description": "LTE, 5G, etc."
+        },
+        "signalStrength": {
+          "type": "string",
+          "format": "uint64",
+          "title": "Device signal strength"
+        },
+        "carrierName": {
+          "type": "string",
+          "title": "Carrier name (can be different from cloudlet org if using \"\")"
+        }
+      },
+      "title": "DeviceInfoDynamic"
+    },
+    "distributed_match_engineDeviceInfoStatic": {
+      "type": "object",
+      "properties": {
+        "deviceOs": {
+          "type": "string",
+          "title": "Android or iOS"
+        },
+        "deviceModel": {
+          "type": "string",
+          "title": "Device model"
+        }
+      },
+      "title": "DeviceInfoStatic"
+    },
+    "distributed_match_engineFindCloudletReply": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "status": {
+          "$ref": "#/definitions/FindCloudletReplyFindStatus",
+          "title": "Status return"
+        },
+        "fqdn": {
+          "type": "string",
+          "title": "Fully Qualified Domain Name of the Closest App instance"
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/distributed_match_engineAppPort"
+          },
+          "title": "List of Service Endpoints for AppInst"
+        },
+        "cloudletLocation": {
+          "$ref": "#/definitions/distributed_match_engineLoc",
+          "title": "Location of the cloudlet"
+        },
+        "edgeEventsCookie": {
+          "type": "string",
+          "title": "Session Cookie for specific EdgeEvents for specific AppInst"
+        },
+        "qosResult": {
+          "$ref": "#/definitions/FindCloudletReplyQosSessionResult",
+          "title": "Result of QOS priority session creation attempt"
+        },
+        "qosErrorMsg": {
+          "type": "string",
+          "title": "Error message in case of QOS_SESSION_FAILED"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      }
+    },
+    "distributed_match_engineFindCloudletRequest": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "sessionCookie": {
+          "type": "string",
+          "description": "Session Cookie from RegisterClientRequest",
+          "title": "Session Cookie"
+        },
+        "carrierName": {
+          "type": "string",
+          "description": "_(optional)_ By default, all SDKs will automatically fill in this parameter with the MCC+MNC of your current provider. Only override this parameter if you need to filter for a specific carrier on the DME. The DME will filter for App instances that are associated with the specified carrier.\nIf you wish to search for any App Instance on the DME regardless of carrier name, you can input “” to consider all carriers as “Any”.",
+          "title": "Carrier Name"
+        },
+        "gpsLocation": {
+          "$ref": "#/definitions/distributed_match_engineLoc",
+          "description": "The GPS location of the user",
+          "title": "GPS Location"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "_(optional)_ Vendor specific data",
+          "title": "Tags"
+        }
+      }
+    },
+    "distributed_match_engineFqdnListReply": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "appFqdns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/distributed_match_engineAppFqdn"
+          }
+        },
+        "status": {
+          "$ref": "#/definitions/FqdnListReplyFLStatus"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      }
+    },
+    "distributed_match_engineFqdnListRequest": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "sessionCookie": {
+          "type": "string",
+          "title": "Session Cookie from RegisterClientRequest"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      }
+    },
+    "distributed_match_engineHealthCheck": {
+      "type": "string",
+      "enum": [
+        "HEALTH_CHECK_UNKNOWN",
+        "HEALTH_CHECK_ROOTLB_OFFLINE",
+        "HEALTH_CHECK_SERVER_FAIL",
+        "HEALTH_CHECK_OK",
+        "HEALTH_CHECK_CLOUDLET_OFFLINE"
+      ],
+      "default": "HEALTH_CHECK_UNKNOWN",
+      "description": "Health check status gets set by external, or rootLB health check\n\n - HEALTH_CHECK_UNKNOWN: Health Check is unknown\n - HEALTH_CHECK_ROOTLB_OFFLINE: Health Check failure due to RootLB being offline\n - HEALTH_CHECK_SERVER_FAIL: Health Check failure due to Backend server being unavailable\n - HEALTH_CHECK_OK: Health Check is ok\n - HEALTH_CHECK_CLOUDLET_OFFLINE: Health Check failure due to Cloudlet Offline",
+      "title": "Health check status"
+    },
+    "distributed_match_engineLProto": {
+      "type": "string",
+      "enum": [
+        "L_PROTO_UNKNOWN",
+        "L_PROTO_TCP",
+        "L_PROTO_UDP"
+      ],
+      "default": "L_PROTO_UNKNOWN",
+      "description": "LProto indicates which protocol to use for accessing an application on a particular port. This is required by Kubernetes for port mapping.\n\n0: `L_PROTO_UNKNOWN`\n1: `L_PROTO_TCP`\n2: `L_PROTO_UDP`\n\n - L_PROTO_UNKNOWN: Unknown protocol\n - L_PROTO_TCP: TCP (L4) protocol\n - L_PROTO_UDP: UDP (L4) protocol",
+      "title": "Layer4 Protocol"
+    },
+    "distributed_match_engineLoc": {
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "format": "double",
+          "title": "Latitude in WGS 84 coordinates"
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double",
+          "title": "Longitude in WGS 84 coordinates"
+        },
+        "horizontalAccuracy": {
+          "type": "number",
+          "format": "double",
+          "title": "Horizontal accuracy (radius in meters)"
+        },
+        "verticalAccuracy": {
+          "type": "number",
+          "format": "double",
+          "title": "Vertical accuracy (meters)"
+        },
+        "altitude": {
+          "type": "number",
+          "format": "double",
+          "title": "On android only lat and long are guaranteed to be supplied\nAltitude in meters"
+        },
+        "course": {
+          "type": "number",
+          "format": "double",
+          "title": "Course (IOS) / bearing (Android) (degrees east relative to true north)"
+        },
+        "speed": {
+          "type": "number",
+          "format": "double",
+          "title": "Speed (IOS) / velocity (Android) (meters/sec)"
+        },
+        "timestamp": {
+          "$ref": "#/definitions/distributed_match_engineTimestamp",
+          "title": "Timestamp"
+        }
+      },
+      "title": "GPS Location"
+    },
+    "distributed_match_engineMaintenanceState": {
+      "type": "string",
+      "enum": [
+        "NORMAL_OPERATION",
+        "MAINTENANCE_START",
+        "FAILOVER_REQUESTED",
+        "FAILOVER_DONE",
+        "FAILOVER_ERROR",
+        "MAINTENANCE_START_NO_FAILOVER",
+        "CRM_REQUESTED",
+        "CRM_UNDER_MAINTENANCE",
+        "CRM_ERROR",
+        "NORMAL_OPERATION_INIT",
+        "UNDER_MAINTENANCE"
+      ],
+      "default": "NORMAL_OPERATION",
+      "description": "Maintenance allows for planned downtimes of Cloudlets.\nThese states involve message exchanges between the Controller,\nthe AutoProv service, and the CRM. Certain states are only set\nby certain actors.\n\n - NORMAL_OPERATION: Normal operational state\n - MAINTENANCE_START: Request start of maintenance\n - FAILOVER_REQUESTED: Trigger failover for any HA AppInsts\n - FAILOVER_DONE: Failover done\n - FAILOVER_ERROR: Some errors encountered during maintenance failover\n - MAINTENANCE_START_NO_FAILOVER: Request start of maintenance without AutoProv failover\n - CRM_REQUESTED: Request CRM to transition to maintenance\n - CRM_UNDER_MAINTENANCE: CRM request done and under maintenance\n - CRM_ERROR: CRM failed to go into maintenance\n - NORMAL_OPERATION_INIT: Request CRM to transition to normal operation\n - UNDER_MAINTENANCE: Under maintenance",
+      "title": "Cloudlet Maintenance States"
+    },
+    "distributed_match_enginePlatformFindCloudletRequest": {
+      "type": "object",
+      "properties": {
+        "ver": {
+          "type": "integer",
+          "format": "int64",
+          "description": "_(hidden)_ Reserved for future use",
+          "title": "API version"
+        },
+        "sessionCookie": {
+          "type": "string",
+          "description": "Session Cookie from RegisterClientRequest",
+          "title": "Session Cookie"
+        },
+        "carrierName": {
+          "type": "string",
+          "description": "_(optional)_ By default, all SDKs will automatically fill in this parameter with the MCC+MNC of your current provider. Only override this parameter if you need to filter for a specific carrier on the DME. The DME will filter for App instances that are associated with the specified carrier.\nIf you wish to search for any app instance on the DME regardless of carrier name, you can input “” to consider all carriers as “Any”.",
+          "title": "Carrier Name"
+        },
+        "clientToken": {
+          "type": "string",
+          "description": "Token with encoded client data",
+          "title": "Client Token"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "_(optional)_ Vendor specific data",
+          "title": "Tags"
+        }
+      }
+    },
+    "distributed_match_engineSample": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "format": "double",
+          "title": "Latency value"
+        },
+        "timestamp": {
+          "$ref": "#/definitions/distributed_match_engineTimestamp",
+          "title": "Timestamp"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      },
+      "title": "Sample"
+    },
+    "distributed_match_engineServerEdgeEvent": {
+      "type": "object",
+      "properties": {
+        "eventType": {
+          "$ref": "#/definitions/ServerEdgeEventServerEventType"
+        },
+        "cloudletState": {
+          "$ref": "#/definitions/distributed_match_engineCloudletState",
+          "title": "Cloudlet state information if cloudlet state is not CLOUDLET_STATE_READY"
+        },
+        "maintenanceState": {
+          "$ref": "#/definitions/distributed_match_engineMaintenanceState",
+          "title": "Cloudlet maintenance state information if maintenance state is not NORMAL_OPERATION"
+        },
+        "healthCheck": {
+          "$ref": "#/definitions/distributed_match_engineHealthCheck",
+          "title": "AppInst health state information if health check is not HEALTH_CHECK_OK"
+        },
+        "statistics": {
+          "$ref": "#/definitions/distributed_match_engineStatistics",
+          "title": "Summarized RTT Latency stats from samples provided from client if event_type is EVENT_LATENCY"
+        },
+        "newCloudlet": {
+          "$ref": "#/definitions/distributed_match_engineFindCloudletReply",
+          "title": "New and closer cloudlet if event_type is EVENT_CLOUDLET_UPDATE.\n(EVENT_CLOUDLET_UPDATE occurs if the client is closer to a different cloudlet, or a new closer appinst is created, or a previously down appinst/cloudlet that is closest to the client is now operational)\nAlso sent on EVENT_CLOUDLET_STATE if another cloudlet is available\nAlso sent on EVENT_CLOUDLET_MAINTENANCE, if another cloudlet is available and maintenance_state == UNDER_MAINTENANCE\nAlso sent on EVENT_APPINST_HEALTH, if another cloudlet is available and health_check != HEALTH_CHECK_UNKNOWN"
+        },
+        "errorMsg": {
+          "type": "string",
+          "title": "Error message if event_type is EVENT_ERROR"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "_(optional)_ Vendor specific data"
+        }
+      },
+      "title": "Message from DME to SDK"
+    },
+    "distributed_match_engineStatistics": {
+      "type": "object",
+      "properties": {
+        "avg": {
+          "type": "number",
+          "format": "double",
+          "title": "Average"
+        },
+        "min": {
+          "type": "number",
+          "format": "double",
+          "title": "Minimum"
+        },
+        "max": {
+          "type": "number",
+          "format": "double",
+          "title": "Maximum"
+        },
+        "stdDev": {
+          "type": "number",
+          "format": "double",
+          "title": "Square root of unbiased variance"
+        },
+        "variance": {
+          "type": "number",
+          "format": "double",
+          "title": "Unbiased variance"
+        },
+        "numSamples": {
+          "type": "string",
+          "format": "uint64",
+          "title": "Number of samples to create stats"
+        },
+        "timestamp": {
+          "$ref": "#/definitions/distributed_match_engineTimestamp",
+          "title": "Timestamp"
+        }
+      },
+      "title": "Statistics"
+    },
+    "distributed_match_engineTimestamp": {
+      "type": "object",
+      "properties": {
+        "seconds": {
+          "type": "string",
+          "format": "int64"
+        },
+        "nanos": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "This is a simple Timestamp message type\ngrpc-gateway converts google.protobuf.Timestamp into an RFC3339-type string\nwhich is a waste of a conversion, so we define our own"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

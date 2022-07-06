@@ -1,0 +1,235 @@
+openapi: 3.0.0
+info:
+  title: qos-position.proto
+  version: version not set
+tags:
+  - name: QosPositionKpi
+paths:
+  /v1/getqospositionkpi:
+    post:
+      operationId: QosPositionKpi_GetQosPositionKpi
+      responses:
+        "200":
+          description: A successful response.(streaming responses)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: "#/components/schemas/distributed_match_engineQosPositionKpiReply"
+                  error:
+                    $ref: "#/components/schemas/rpcStatus"
+                title: Stream result of distributed_match_engineQosPositionKpiReply
+        default:
+          description: An unexpected error response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/rpcStatus"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/distributed_match_engineQosPositionRequest"
+        required: true
+      tags:
+        - QosPositionKpi
+components:
+  schemas:
+    distributed_match_engineBandSelection:
+      type: object
+      properties:
+        rat2g:
+          type: array
+          items:
+            type: string
+          title: Radio Access Technologies
+        rat3g:
+          type: array
+          items:
+            type: string
+        rat4g:
+          type: array
+          items:
+            type: string
+        rat5g:
+          type: array
+          items:
+            type: string
+      title: supported band values
+    distributed_match_engineLoc:
+      type: object
+      properties:
+        latitude:
+          type: number
+          format: double
+          title: Latitude in WGS 84 coordinates
+        longitude:
+          type: number
+          format: double
+          title: Longitude in WGS 84 coordinates
+        horizontalAccuracy:
+          type: number
+          format: double
+          title: Horizontal accuracy (radius in meters)
+        verticalAccuracy:
+          type: number
+          format: double
+          title: Vertical accuracy (meters)
+        altitude:
+          type: number
+          format: double
+          title: |-
+            On android only lat and long are guaranteed to be supplied
+            Altitude in meters
+        course:
+          type: number
+          format: double
+          title: Course (IOS) / bearing (Android) (degrees east relative to true north)
+        speed:
+          type: number
+          format: double
+          title: Speed (IOS) / velocity (Android) (meters/sec)
+        timestamp:
+          $ref: "#/components/schemas/distributed_match_engineTimestamp"
+      title: GPS Location
+    distributed_match_engineQosPosition:
+      type: object
+      properties:
+        positionid:
+          type: string
+          format: int64
+          title: as set by the client, must be unique within QosRequest
+        gpsLocation:
+          $ref: "#/components/schemas/distributed_match_engineLoc"
+    distributed_match_engineQosPositionKpiReply:
+      type: object
+      properties:
+        ver:
+          type: integer
+          format: int64
+          description: _(hidden)_ Reserved for future use
+          title: API version
+        status:
+          $ref: "#/components/schemas/distributed_match_engineReplyStatus"
+        positionResults:
+          type: array
+          items:
+            $ref: "#/components/schemas/distributed_match_engineQosPositionKpiResult"
+          title: kpi details
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          title: _(optional)_ Vendor specific data
+    distributed_match_engineQosPositionKpiResult:
+      type: object
+      properties:
+        positionid:
+          type: string
+          format: int64
+          title: as set by the client, must be unique within one QosPositionRequest
+        gpsLocation:
+          $ref: "#/components/schemas/distributed_match_engineLoc"
+        dluserthroughputMin:
+          type: number
+          format: float
+          title: throughput
+        dluserthroughputAvg:
+          type: number
+          format: float
+        dluserthroughputMax:
+          type: number
+          format: float
+        uluserthroughputMin:
+          type: number
+          format: float
+        uluserthroughputAvg:
+          type: number
+          format: float
+        uluserthroughputMax:
+          type: number
+          format: float
+        latencyMin:
+          type: number
+          format: float
+        latencyAvg:
+          type: number
+          format: float
+        latencyMax:
+          type: number
+          format: float
+    distributed_match_engineQosPositionRequest:
+      type: object
+      properties:
+        ver:
+          type: integer
+          format: int64
+          description: _(hidden)_ Reserved for future use
+          title: API version
+        sessionCookie:
+          type: string
+          title: Session Cookie from RegisterClientRequest
+        positions:
+          type: array
+          items:
+            $ref: "#/components/schemas/distributed_match_engineQosPosition"
+          title: list of positions
+        lteCategory:
+          type: integer
+          format: int32
+          description: _(optional)_ Client's device LTE category number.
+        bandSelection:
+          $ref: "#/components/schemas/distributed_match_engineBandSelection"
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+          title: _(optional)_ Vendor specific data
+      title: QosPositionRequest is used for both GetQosPositionKpi
+    distributed_match_engineReplyStatus:
+      type: string
+      enum:
+        - RS_UNDEFINED
+        - RS_SUCCESS
+        - RS_FAIL
+      default: RS_UNDEFINED
+      description: |-
+        - RS_UNDEFINED: Undefined status
+         - RS_SUCCESS: Successful status
+         - RS_FAIL: Failure status
+      title: ReplyStatus
+    distributed_match_engineTimestamp:
+      type: object
+      properties:
+        seconds:
+          type: string
+          format: int64
+        nanos:
+          type: integer
+          format: int32
+      title: >-
+        This is a simple Timestamp message type
+
+        grpc-gateway converts google.protobuf.Timestamp into an RFC3339-type string
+
+        which is a waste of a conversion, so we define our own
+    protobufAny:
+      type: object
+      properties:
+        "@type":
+          type: string
+      additionalProperties: {}
+    rpcStatus:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            $ref: "#/components/schemas/protobufAny"
