@@ -3,7 +3,6 @@
 GOOGLEAPIS	= ../third_party/googleapis
 INCLUDE		= -I. -I${GOOGLEAPIS} -I../edgeprotogen
 BUILTIN		= Mgoogle/api/annotations.proto=${GOOGLEAPIS}/google/api,Mgoogle/protobuf/descriptor.proto=${GOOGLEAPIS}/google/protobuf,Medgeprotogen.proto=.,Mloc.proto=.,Mappcommon.proto=.,Mapp-client.proto=.,Mdynamic-location-group.proto=.
-LASTTAG		= $(shell git describe --tags --abbrev=0)
 
 # go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger@latest
 doc:
