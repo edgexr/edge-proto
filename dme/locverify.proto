@@ -1,0 +1,161 @@
+// Copyright 2022 MobiledgeX, Inc
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+package distributed_match_engine;
+
+import "google/api/annotations.proto";
+import "loc.proto";
+
+message VerifyLocationRequest {
+  /*
+   * API version
+   *
+   * _(hidden)_ Reserved for future use
+   */
+  uint32 ver = 1;
+  /*
+   * Session Cookie
+   *
+   * Session Cookie from RegisterClientRequest
+   */
+  string session_cookie = 2;
+  /*
+   * Carrier Name
+   *
+   * Unique carrier identification (typically MCC + MNC)
+   */
+  string carrier_name = 3;
+  /*
+   * GPS Location
+   *
+   * The GPS location to verify
+   */
+  Loc gps_location = 4;
+  /*
+   * Verify Location Token
+   *
+   * Must be retrieved from TokenServerURI
+   */
+  string verify_loc_token = 5;
+  /*
+   * Cell ID
+   *
+   * _(removed)_ Cell ID where the client is
+   */
+  reserved "cell_id";
+  reserved 6;
+  /*
+   * Tags
+   *
+   * _(optional)_ Vendor specific data
+   */
+  map<string, string> tags = 100;
+}
+
+message VerifyLocationReply {
+  /*
+   * API version
+   *
+   * _(hidden)_ Reserved for future use
+   */
+  uint32 ver = 1;
+  // Status of the reply
+  enum TowerStatus {
+    TOWER_UNKNOWN = 0;
+    CONNECTED_TO_SPECIFIED_TOWER = 1;
+    NOT_CONNECTED_TO_SPECIFIED_TOWER = 2;
+  }
+  TowerStatus tower_status = 2;
+  enum GPSLocationStatus {
+    LOC_UNKNOWN = 0;
+    LOC_VERIFIED = 1;
+    LOC_MISMATCH_SAME_COUNTRY = 2;
+    LOC_MISMATCH_OTHER_COUNTRY = 3;
+    LOC_ROAMING_COUNTRY_MATCH = 4;
+    LOC_ROAMING_COUNTRY_MISMATCH = 5;
+    LOC_ERROR_UNAUTHORIZED = 6;
+    LOC_ERROR_OTHER = 7;
+  }
+  GPSLocationStatus gps_location_status = 3;
+  // location accuracy, the location is verified to
+  // be within this number of kilometers.  Negative value
+  // means no verification was performed
+  double gps_location_accuracy_km = 4;
+  // _(optional)_ Vendor specific data
+  map<string, string> tags = 100;
+}
+
+message GetLocationRequest {
+  /*
+   * API version
+   *
+   * _(hidden)_ Reserved for future use
+   */
+  uint32 ver = 1;
+  // Session Cookie from RegisterClientRequest
+  string session_cookie = 2;
+  // Unique carrier identification (typically MCC + MNC)
+  string carrier_name = 3;
+  // _(removed)_ Cell id where the client is
+  reserved "cell_id";
+  reserved 4;
+  // _(optional)_ Vendor specific data
+  map<string, string> tags = 100;
+}
+
+message GetLocationReply {
+  /*
+   * API version
+   *
+   * _(hidden)_ Reserved for future use
+   */
+  uint32 ver = 1;
+  // Status of the reply
+  enum LocStatus {
+    LOC_UNKNOWN = 0;
+    LOC_FOUND = 1;
+    // The user does not allow his location to be tracked
+    LOC_DENIED = 2;
+  }
+  LocStatus status = 2;
+  // Unique carrier identification (typically MCC + MNC)
+  string carrier_name = 3;
+  // The tower that the user is currently connected to
+  uint64 tower = 4;
+  // The GPS location of the user
+  Loc network_location = 5;
+  // _(optional)_ Vendor specific data
+  map<string, string> tags = 100;
+}
+
+service Location {
+  /*
+   * VerifyLocation
+   *
+   * Verifies that the GPS coordinates accurately report the actual location of the device.
+   */
+  rpc VerifyLocation(VerifyLocationRequest) returns (VerifyLocationReply) {
+    option (google.api.http) = {
+      post: "/v1/verifylocation"
+      body: "*"
+    };
+  }
+  rpc GetLocation(GetLocationRequest) returns (GetLocationReply) {
+    option (google.api.http) = {
+      post: "/v1/getlocation"
+      body: "*"
+    };
+  }
+}

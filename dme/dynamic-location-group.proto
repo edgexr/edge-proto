@@ -17,6 +17,9 @@
 syntax = "proto3";
 package distributed_match_engine;
 
+import "google/api/annotations.proto";
+import "appcommon.proto";
+
 message DlgMessage {
   uint32 ver = 1;
   // Dynamic Location Group Id
@@ -44,6 +47,56 @@ message DlgReply {
   string group_cookie = 3;
 }
 
+message DynamicLocGroupRequest {
+  /*
+   * API version
+   *
+   * _(hidden)_ Reserved for future use
+   */
+  uint32 ver = 1;
+  // Session Cookie from RegisterClientRequest
+  string session_cookie = 2;
+  // Dynamic Location Group Id
+  uint64 lg_id = 3;
+  // Use Secure communication or Open with the group
+  enum DlgCommType {
+    DLG_UNDEFINED = 0;
+    DLG_SECURE = 1;
+    DLG_OPEN = 2;
+  }
+  DlgCommType comm_type = 11;
+  // Unused
+  string user_data = 12;
+  // _(removed)_ Cell id where the client is
+  reserved "cell_id";
+  reserved 13;
+  // _(optional)_ Vendor specific data
+  map<string, string> tags = 100;
+}
+
+message DynamicLocGroupReply {
+  /*
+   * API version
+   *
+   * _(hidden)_ Reserved for future use
+   */
+  uint32 ver = 1;
+  // Status of the reply
+  ReplyStatus status = 2;
+  // Error Code based on Failure
+  uint32 error_code = 3;
+  // Group Cookie for Secure Group Communication
+  string group_cookie = 5;
+  // _(optional)_ Vendor specific data
+  map<string, string> tags = 100;
+}
+
 service DynamicLocGroupApi {
   rpc SendToGroup(DlgMessage) returns (DlgReply) {}
+  rpc AddUserToGroup(DynamicLocGroupRequest) returns (DynamicLocGroupReply) {
+    option (google.api.http) = {
+      post: "/v1/addusertogroup"
+      body: "*"
+    };
+  }
 }
