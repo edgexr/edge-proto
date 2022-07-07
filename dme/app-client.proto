@@ -69,40 +69,6 @@ message FindCloudletRequest {
   map<string, string> tags = 100;
 }
 
-message PlatformFindCloudletRequest {
-  /*
-   * API version
-   *
-   * _(hidden)_ Reserved for future use
-   */
-  uint32 ver = 1;
-  /*
-   * Session Cookie
-   *
-   * Session Cookie from RegisterClientRequest
-   */
-  string session_cookie = 2;
-  /*
-   * Carrier Name
-   *
-   * _(optional)_ By default, all SDKs will automatically fill in this parameter with the MCC+MNC of your current provider. Only override this parameter if you need to filter for a specific carrier on the DME. The DME will filter for App instances that are associated with the specified carrier.
-   * If you wish to search for any app instance on the DME regardless of carrier name, you can input “” to consider all carriers as “Any”.
-   */
-  string carrier_name = 3;
-  /*
-   * Client Token
-   *
-   * Token with encoded client data
-   */
-  string client_token = 4;
-  /*
-   * Tags
-   *
-   * _(optional)_ Vendor specific data
-   */
-  map<string, string> tags = 100;
-}
-
 message FindCloudletReply {
   /*
    * API version
@@ -209,54 +175,6 @@ message AppInstListReply {
   }
   AIStatus status = 2;
   repeated CloudletLocation cloudlets = 3;
-  // _(optional)_ Vendor specific data
-  map<string, string> tags = 100;
-}
-
-message FqdnListRequest {
-  /*
-   * API version
-   *
-   * _(hidden)_ Reserved for future use
-   */
-  uint32 ver = 1;
-  // Session Cookie from RegisterClientRequest
-  string session_cookie = 2;
-  // _(removed)_ Cell id where the client is
-  reserved "cell_id";
-  reserved 3;
-  // _(optional)_ Vendor specific data
-  map<string, string> tags = 100;
-}
-
-message AppFqdn{
-  // App  Name
-  string app_name = 1;
-  // App Version
-  string app_vers = 2;
-  // App organization name
-  string org_name = 3;
-  // App FQDN
-  repeated string fqdns = 4;
-  // _(optional)_ Android package name
-  string android_package_name = 5;
-}
-
-message FqdnListReply{
-  /*
-   * API version
-   *
-   * _(hidden)_ Reserved for future use
-   */
-  uint32 ver = 1;
-  // Status of the reply
-  enum FLStatus {
-    FL_UNDEFINED = 0;
-    FL_SUCCESS = 1;
-    FL_FAIL = 2;
-  }
-  repeated AppFqdn app_fqdns = 3;
-  FLStatus status = 4;
   // _(optional)_ Vendor specific data
   map<string, string> tags = 100;
 }
@@ -373,15 +291,15 @@ message ServerEdgeEvent {
   map<string, string> tags = 100;
 }
 
+/*
+ * APIs for application clients on devices to interact with Edge Cloud application services.
+ */
 service MatchEngineApi {
   /*
    * FindCloudlet
    *
-   * Locates the most optimal edge computing footprint and allows the
-   * registered application to find the application backend by leveraging the
-   * location, application subscription, and service provider agreement. If
-   * there are no suitable cloudlet instances available, the client may connect
-   * to the application server located in the public cloud.
+   * Find the best application service running on a cloudlet in the
+   * Edge Cloud for the client to use, based on proximity and other policies.
    */
    rpc FindCloudlet(FindCloudletRequest) returns (FindCloudletReply) {
     option (google.api.http) = {
@@ -390,35 +308,38 @@ service MatchEngineApi {
     };
   }
   /*
-   * PlatformFindCloudlet
+   * GetAppInstList
    *
-   * Similar to FindCloudlet, except uses a token for client data.
-   * This API is only applicable for Platform Applications.
+   * Like FindCloudlet, but returns a short list of the best instances
+   * instead of a single result, allowing the client to choose based on
+   * its own criteria, or maintain several parallel connections to
+   * different sites.
    */
-  rpc PlatformFindCloudlet(PlatformFindCloudletRequest) returns (FindCloudletReply) {
-    option (google.api.http) = {
-      post: "/v1/platformfindcloudlet"
-      body: "*"
-    };
-  }
   rpc GetAppInstList(AppInstListRequest) returns (AppInstListReply) {
     option (google.api.http) = {
       post: "/v1/getappinstlist"
       body: "*"
     };
   }
-  rpc GetFqdnList(FqdnListRequest) returns (FqdnListReply) {
-    option (google.api.http) = {
-      post: "/v1/getfqdnlist"
-      body: "*"
-    };
-  }
+  /*
+   * GetAppOfficialFqdn
+   *
+   * Get an App's official FQDN if configured, which points to a default
+   * public cloud instance of the application service that can be
+   * used if no Edge Cloud application instances are available.
+   */
   rpc GetAppOfficialFqdn(AppOfficialFqdnRequest) returns (AppOfficialFqdnReply) {
     option (google.api.http) = {
       post: "/v1/getappofficialfqdn"
       body: "*"
     };
   }
+  /*
+   * StreamEdgeEvent
+   *
+   * Streams events bidirectionally between device client and the
+   * Edge Cloud platform for notifications.
+   */
   rpc StreamEdgeEvent(stream ClientEdgeEvent) returns (stream ServerEdgeEvent) {
     option (google.api.http) = {
       post: "/v1/streamedgeevent"
