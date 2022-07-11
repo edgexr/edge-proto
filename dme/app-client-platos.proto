@@ -19,7 +19,6 @@ package distributed_match_engine;
 
 import "google/api/annotations.proto";
 import "app-client.proto";
-//import "appcommon.proto";
 
 message PlatformFindCloudletRequest {
   /*
