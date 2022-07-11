@@ -38,7 +38,7 @@ enum LProto {
 
 // Application Port
 //
-// AppPort describes an L4 or L7 public access port/path mapping. This is used to track external to internal mappings for access via a shared load balancer or reverse proxy.
+// AppPort describes an L4 public access port/path mapping. This is used to track external to internal mappings for access via a shared load balancer or reverse proxy.
 message AppPort {
   // TCP (L4) or UDP (L4) protocol
   LProto proto = 1;
@@ -46,7 +46,8 @@ message AppPort {
   int32 internal_port = 2;
   // Public facing port for TCP/UDP (may be mapped on shared LB reverse proxy)
   int32 public_port = 3;
-  // skip 4 to preserve the numbering. 4 was path_prefix but was removed since we dont need it after removed http
+  // path_prefix was removed since we dont need it after removed http
+  reserved 4;
   // FQDN prefix to append to base FQDN in FindCloudlet response. May be empty.
   string fqdn_prefix = 5;
   // A non-zero end port indicates a port range from internal port to end port, inclusive.
