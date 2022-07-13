@@ -1,0 +1,225 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: QosPositionKpi API
+    version: v1.2.4.1-hf8
+paths:
+    /v1/getqospositionkpi:
+        post:
+            tags:
+                - QosPositionKpi
+            operationId: QosPositionKpi_GetQosPositionKpi
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/QosPositionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/QosPositionKpiReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+components:
+    schemas:
+        BandSelection:
+            type: object
+            properties:
+                rat2g:
+                    type: array
+                    items:
+                        type: string
+                    description: Radio Access Technologies
+                rat3g:
+                    type: array
+                    items:
+                        type: string
+                rat4g:
+                    type: array
+                    items:
+                        type: string
+                rat5g:
+                    type: array
+                    items:
+                        type: string
+            description: supported band values
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        Loc:
+            type: object
+            properties:
+                latitude:
+                    type: number
+                    description: Latitude in WGS 84 coordinates
+                    format: double
+                longitude:
+                    type: number
+                    description: Longitude in WGS 84 coordinates
+                    format: double
+                horizontal_accuracy:
+                    type: number
+                    description: Horizontal accuracy (radius in meters)
+                    format: double
+                vertical_accuracy:
+                    type: number
+                    description: Vertical accuracy (meters)
+                    format: double
+                altitude:
+                    type: number
+                    description: On android only lat and long are guaranteed to be supplied Altitude in meters
+                    format: double
+                course:
+                    type: number
+                    description: Course (IOS) / bearing (Android) (degrees east relative to true north)
+                    format: double
+                speed:
+                    type: number
+                    description: Speed (IOS) / velocity (Android) (meters/sec)
+                    format: double
+                timestamp:
+                    $ref: '#/components/schemas/Timestamp'
+            description: GPS Location
+        QosPosition:
+            type: object
+            properties:
+                positionid:
+                    type: integer
+                    description: as set by the client, must be unique within QosRequest
+                    format: int64
+                gps_location:
+                    $ref: '#/components/schemas/Loc'
+        QosPositionKpiReply:
+            type: object
+            properties:
+                ver:
+                    type: integer
+                    description: API version _(hidden)_ Reserved for future use
+                    format: uint32
+                status:
+                    enum:
+                        - RS_UNDEFINED
+                        - RS_SUCCESS
+                        - RS_FAIL
+                    type: string
+                    description: Status of the reply
+                    format: enum
+                position_results:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/QosPositionKpiResult'
+                    description: kpi details
+                tags:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: _(optional)_ Vendor specific data
+        QosPositionKpiResult:
+            type: object
+            properties:
+                positionid:
+                    type: integer
+                    description: as set by the client, must be unique within one QosPositionRequest
+                    format: int64
+                gps_location:
+                    $ref: '#/components/schemas/Loc'
+                dluserthroughput_min:
+                    type: number
+                    description: throughput
+                    format: float
+                dluserthroughput_avg:
+                    type: number
+                    format: float
+                dluserthroughput_max:
+                    type: number
+                    format: float
+                uluserthroughput_min:
+                    type: number
+                    format: float
+                uluserthroughput_avg:
+                    type: number
+                    format: float
+                uluserthroughput_max:
+                    type: number
+                    format: float
+                latency_min:
+                    type: number
+                    format: float
+                latency_avg:
+                    type: number
+                    format: float
+                latency_max:
+                    type: number
+                    format: float
+        QosPositionRequest:
+            type: object
+            properties:
+                ver:
+                    type: integer
+                    description: API version _(hidden)_ Reserved for future use
+                    format: uint32
+                session_cookie:
+                    type: string
+                    description: Session Cookie from RegisterClientRequest
+                positions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/QosPosition'
+                    description: list of positions
+                lte_category:
+                    type: integer
+                    description: _(optional)_ Client's device LTE category number.
+                    format: int32
+                band_selection:
+                    $ref: '#/components/schemas/BandSelection'
+                tags:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: _(optional)_ Vendor specific data
+            description: QosPositionRequest is used for both GetQosPositionKpi
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        Timestamp:
+            type: object
+            properties:
+                seconds:
+                    type: integer
+                    description: Time in seconds since epoch
+                    format: int64
+                nanos:
+                    type: integer
+                    description: Added non-negative sub-second time in nanoseconds
+                    format: int32
+            description: This is a simple Timestamp message type grpc-gateway converts google.protobuf.Timestamp into an RFC3339-type string which is a waste of a conversion, so we define our own
+tags:
+    - name: QosPositionKpi

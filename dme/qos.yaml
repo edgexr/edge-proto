@@ -1,0 +1,242 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: QualityOfService API
+    version: v1.2.4.1-hf8
+paths:
+    /v1/qosprioritysessioncreate:
+        post:
+            tags:
+                - QualityOfService
+            description: |-
+                QosPrioritySessionCreate
+
+                 Creates a QOS priority session (latency or throughput priority) from the client
+                 to the app inst by making a call to the operator's priority session API server.
+            operationId: QualityOfService_QosPrioritySessionCreate
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/QosPrioritySessionCreateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/QosPrioritySessionReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/qosprioritysessiondelete:
+        post:
+            tags:
+                - QualityOfService
+            description: "QosPrioritySessionDelete\n\n Deletes a previously created QOS priority session by making a call to the operator's \n priority session API server."
+            operationId: QualityOfService_QosPrioritySessionDelete
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/QosPrioritySessionDeleteRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/QosPrioritySessionDeleteReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+components:
+    schemas:
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        QosPrioritySessionCreateRequest:
+            type: object
+            properties:
+                ver:
+                    type: integer
+                    description: API version _(hidden)_ Reserved for future use
+                    format: uint32
+                session_cookie:
+                    type: string
+                    description: Session Cookie from RegisterClientRequest
+                session_duration:
+                    type: integer
+                    description: _(optional)_ QOS Priority Session duration in seconds
+                    format: uint32
+                ip_user_equipment:
+                    type: string
+                    description: IP address of mobile device
+                ip_application_server:
+                    type: string
+                    description: IP address of the application server
+                port_user_equipment:
+                    type: string
+                    description: _(optional)_ A list of single ports or port ranges on the user equipment.
+                port_application_server:
+                    type: string
+                    description: _(optional)_ A list of single ports or port ranges on the application server
+                protocol_in:
+                    enum:
+                        - TCP
+                        - UDP
+                        - ANY
+                    type: string
+                    description: _(optional)_ The used transport protocol for the uplink
+                    format: enum
+                protocol_out:
+                    enum:
+                        - TCP
+                        - UDP
+                        - ANY
+                    type: string
+                    description: _(optional)_ The used transport protocol for the downlink
+                    format: enum
+                profile:
+                    enum:
+                        - QOS_NO_PRIORITY
+                        - QOS_LOW_LATENCY
+                        - QOS_THROUGHPUT_DOWN_S
+                        - QOS_THROUGHPUT_DOWN_M
+                        - QOS_THROUGHPUT_DOWN_L
+                    type: string
+                    description: QOS Priority Session profile name
+                    format: enum
+                notification_uri:
+                    type: string
+                    description: _(optional)_ URI of the callback receiver. Allows asynchronous delivery of session related events.
+                notification_auth_token:
+                    type: string
+                    description: _(optional)_ Authentification token for callback API
+                tags:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: _(optional)_ Vendor specific data
+        QosPrioritySessionDeleteReply:
+            type: object
+            properties:
+                ver:
+                    type: integer
+                    description: API version _(hidden)_ Reserved for future use
+                    format: uint32
+                status:
+                    enum:
+                        - QDEL_UNKNOWN
+                        - QDEL_DELETED
+                        - QDEL_NOT_FOUND
+                    type: string
+                    description: Status return.
+                    format: enum
+                tags:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: _(optional)_ Vendor specific data
+        QosPrioritySessionDeleteRequest:
+            type: object
+            properties:
+                ver:
+                    type: integer
+                    description: API version _(hidden)_ Reserved for future use
+                    format: uint32
+                session_cookie:
+                    type: string
+                    description: Session Cookie from RegisterClientRequest
+                profile:
+                    enum:
+                        - QOS_NO_PRIORITY
+                        - QOS_LOW_LATENCY
+                        - QOS_THROUGHPUT_DOWN_S
+                        - QOS_THROUGHPUT_DOWN_M
+                        - QOS_THROUGHPUT_DOWN_L
+                    type: string
+                    description: QOS Priority Session profile name
+                    format: enum
+                session_id:
+                    type: string
+                    description: QOS Priority Session ID to be deleted
+                tags:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: _(optional)_ Vendor specific data
+        QosPrioritySessionReply:
+            type: object
+            properties:
+                ver:
+                    type: integer
+                    description: API version _(hidden)_ Reserved for future use
+                    format: uint32
+                session_duration:
+                    type: integer
+                    description: QOS Priority Session duration in seconds
+                    format: uint32
+                profile:
+                    enum:
+                        - QOS_NO_PRIORITY
+                        - QOS_LOW_LATENCY
+                        - QOS_THROUGHPUT_DOWN_S
+                        - QOS_THROUGHPUT_DOWN_M
+                        - QOS_THROUGHPUT_DOWN_L
+                    type: string
+                    description: QOS Priority Session profile name
+                    format: enum
+                session_id:
+                    type: string
+                    description: Session ID in UUID format
+                started_at:
+                    type: integer
+                    description: Timestamp of session start in seconds since unix epoch
+                    format: uint32
+                expires_at:
+                    type: integer
+                    description: Timestamp of session expiration if the session was not deleted in seconds since unix epoch
+                    format: uint32
+                http_status:
+                    type: integer
+                    description: HTTP Status Code of call to operator's API server.
+                    format: uint32
+                tags:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: _(optional)_ Vendor specific data
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+tags:
+    - name: QualityOfService

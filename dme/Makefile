@@ -31,4 +31,7 @@ endef
 # Generate doc directly from proto to openapiv3
 doc:
 	$(call gendoc,app-client.proto)
+	$(call gendoc,locverify.proto)
+	$(call gendoc,qos.proto)
+	$(call gendoc,qos-position.proto)
 	$(call gendoc,session.proto)
