@@ -27,7 +27,9 @@ import "edgeprotogen.proto";
 // grpc-gateway converts google.protobuf.Timestamp into an RFC3339-type string
 // which is a waste of a conversion, so we define our own
 message Timestamp {
+  // Time in seconds since epoch
   int64 seconds = 1;
+  // Added non-negative sub-second time in nanoseconds
   int32 nanos = 2;
   option (edgeprotogen.custom_yaml_json_marshalers) = true;
 }
